@@ -1,14 +1,17 @@
 package com.example.todolist
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -40,6 +43,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.google.firebase.database.FirebaseDatabase
 
 class SignInActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -129,6 +133,16 @@ fun LoginTodoList() {
             Image(
                 painter = painterResource(id = R.drawable.baseline_arrow_circle_right_36),
                 contentDescription = "Akshay Kumar Kolakani",
+                modifier = Modifier.clickable {
+                    val appUserDetails = AppUserDetails(
+                        "",
+                        fullName,
+                        "",
+                        password
+                    )
+
+                    appUserSignIn(appUserDetails, context)
+                }
             )
 
             Spacer(modifier = Modifier.weight(1f))
@@ -164,4 +178,34 @@ fun LoginTodoList() {
     }
 
 
+}
+
+fun appUserSignIn(appUserDetails: AppUserDetails, context: Context) {
+
+    val firebaseDatabase = FirebaseDatabase.getInstance()
+    val databaseReference = firebaseDatabase.getReference("AppUserDetails").child(appUserDetails.emailid.replace(".", ","))
+
+    databaseReference.get().addOnCompleteListener { task ->
+        if (task.isSuccessful) {
+            val dbData = task.result?.getValue(AppUserDetails::class.java)
+            if (dbData != null) {
+                if (dbData.password == appUserDetails.password) {
+
+                    Toast.makeText(context, "Login Sucessfully", Toast.LENGTH_SHORT).show()
+
+                } else {
+                    Toast.makeText(context, "Seems Incorrect Credentials", Toast.LENGTH_SHORT).show()
+                }
+            } else {
+                Toast.makeText(context, "Your account not found", Toast.LENGTH_SHORT).show()
+            }
+        } else {
+            Toast.makeText(
+                context,
+                "Something went wrong",
+                Toast.LENGTH_SHORT
+            ).show()
+        }
+
+    }
 }

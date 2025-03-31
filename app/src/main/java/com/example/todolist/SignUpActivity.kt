@@ -1,13 +1,16 @@
 package com.example.todolist
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -41,6 +44,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.google.firebase.database.FirebaseDatabase
 
 class SignUpActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -67,7 +71,7 @@ fun SignUpScreen() {
 
         Button(
             onClick = {
-                context.startActivity(Intent(context, SignUpActivity::class.java))
+                context.startActivity(Intent(context, SignInActivity::class.java))
                 context.finish()
             },
             modifier = Modifier
@@ -96,6 +100,7 @@ fun SignUpScreen() {
             modifier = Modifier
                 .padding(bottom = 12.dp)
                 .align(Alignment.CenterHorizontally)
+
 
         )
 
@@ -189,6 +194,31 @@ fun SignUpScreen() {
             Image(
                 painter = painterResource(id = R.drawable.baseline_arrow_circle_right_36),
                 contentDescription = "Akshay Kumar Kolakani",
+                modifier = Modifier
+                    .clickable {
+                        when {
+                            useremail.isEmpty() -> {
+                                Toast.makeText(context, " Please Enter Mail", Toast.LENGTH_SHORT).show()
+                            }
+                            name.isEmpty() -> {
+                                Toast.makeText(context, " Please Enter Name", Toast.LENGTH_SHORT).show()
+                            }
+                            userpassword.isEmpty() -> {
+                                Toast.makeText(context, " Please Enter Password", Toast.LENGTH_SHORT).show()
+                            }
+
+                            else -> {
+                                val appUserDetails = AppUserDetails(
+                                    name,
+                                    useremail,
+                                    "",
+                                    userpassword
+                                )
+                                signUpAppUser(appUserDetails,context)
+                            }
+
+                        }
+                    }
             )
 
             Spacer(modifier = Modifier.weight(1f))
@@ -200,3 +230,39 @@ fun SignUpScreen() {
 
     }
 }
+
+fun signUpAppUser(appUserDetails: AppUserDetails, context: Context) {
+
+    val firebaseDatabase = FirebaseDatabase.getInstance()
+    val databaseReference = firebaseDatabase.getReference("AppUserDetails")
+
+    databaseReference.child(appUserDetails.emailid.replace(".", ","))
+        .setValue(appUserDetails)
+        .addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                Toast.makeText(context, "You Registered Successfully", Toast.LENGTH_SHORT)
+                    .show()
+
+            } else {
+                Toast.makeText(
+                    context,
+                    "Registration Failed",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        }
+        .addOnFailureListener { _ ->
+            Toast.makeText(
+                context,
+                "Something went wrong",
+                Toast.LENGTH_SHORT
+            ).show()
+        }
+}
+
+data class AppUserDetails(
+    var name : String = "",
+    var emailid : String = "",
+    var area : String = "",
+    var password: String = ""
+)
