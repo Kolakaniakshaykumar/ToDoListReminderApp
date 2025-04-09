@@ -14,11 +14,11 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/stressLevelNavigation"/>
+        app:layout_constraintBottom_toTopOf="@id/todoListNav"/>
 
 
     <LinearLayout
-        android:id="@+id/stressLevelNavigation"
+        android:id="@+id/todoListNav"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingVertical="6dp"
@@ -27,7 +27,7 @@
         app:layout_constraintEnd_toEndOf="parent">
 
         <LinearLayout
-            android:id="@+id/btStressHome"
+            android:id="@+id/btManageTasks"
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
@@ -37,12 +37,13 @@
             <ImageView
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:src="@drawable/baseline_home_24"/>
+                android:src="@drawable/manage_task"/>
+
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Home"
+                android:text="Manage Tasks"
                 android:textColor="@color/black"
                 android:textStyle="bold"/>
 
@@ -55,7 +56,7 @@
 
 
         <LinearLayout
-            android:id="@+id/btManageDetails"
+            android:id="@+id/btUpcomingTasks"
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
@@ -65,12 +66,12 @@
             <ImageView
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:src="@drawable/baseline_home_24"/>
+                android:src="@drawable/upcoming_task"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Manage Details"
+                android:text="Upcoming Tasks"
                 android:textColor="@color/black"
                 android:textStyle="bold"/>
 
@@ -92,7 +93,7 @@
             <ImageView
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:src="@drawable/baseline_home_24"/>
+                android:src="@drawable/profile"/>
 
             <TextView
                 android:layout_width="wrap_content"
