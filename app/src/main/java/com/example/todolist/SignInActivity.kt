@@ -191,8 +191,14 @@ fun appUserSignIn(appUserDetails: AppUserDetails, context: Context) {
             if (dbData != null) {
                 if (dbData.password == appUserDetails.password) {
 
+                    TodoListData.writeLS(context, true)
+                    TodoListData.writeMail(context, dbData.emailid)
+                    TodoListData.writeUserName(context, dbData.name)
+
                     Toast.makeText(context, "Login Sucessfully", Toast.LENGTH_SHORT).show()
 
+                    context.startActivity(Intent(context, ConatinerActivity::class.java))
+                    (context as Activity).finish()
                 } else {
                     Toast.makeText(context, "Seems Incorrect Credentials", Toast.LENGTH_SHORT).show()
                 }
