@@ -5,6 +5,7 @@ import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
@@ -50,6 +51,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.example.todolist.taskdata.DatabaseProvider
+import com.example.todolist.taskdata.TaskEntity
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.util.Calendar
 
 class CreateTaskActivity : ComponentActivity() {
@@ -141,7 +148,10 @@ fun CreateTaskScreen() {
 
             Image(
                 modifier = Modifier
-                    .size(36.dp),
+                    .size(36.dp)
+                    .clickable {
+                        context.finish()
+                    },
                 painter = painterResource(id = R.drawable.baseline_arrow_back_36),
                 contentDescription = "Task"
             )
@@ -166,6 +176,11 @@ fun CreateTaskScreen() {
                 .padding(12.dp)
         ) {
 
+            Text(
+                modifier = Modifier,
+                text = "Task Name",
+                fontSize = 14.sp
+            )
 
             OutlinedTextField(
                 modifier = Modifier
@@ -179,9 +194,7 @@ fun CreateTaskScreen() {
             Text(
                 modifier = Modifier,
                 text = "Task Description",
-                style = MaterialTheme.typography.titleMedium.copy(
-                    color = Color.Red,
-                )
+                fontSize = 14.sp
             )
 
             OutlinedTextField(
@@ -215,7 +228,7 @@ fun CreateTaskScreen() {
                     contentAlignment = Alignment.CenterStart
                 ) {
                     Text(
-                        text = dateState.ifEmpty { "Event Date" },
+                        text = dateState.ifEmpty { "Date" },
                         color = if (dateState.isEmpty()) Color.Gray else Color.Black
                     )
                     Icon(
@@ -246,7 +259,7 @@ fun CreateTaskScreen() {
                     contentAlignment = Alignment.CenterStart
                 ) {
                     Text(
-                        text = timeState.ifEmpty { "Event Time" },
+                        text = timeState.ifEmpty { "Time" },
                         color = if (timeState.isEmpty()) Color.Gray else Color.Black
                     )
                     Icon(
@@ -297,7 +310,27 @@ fun CreateTaskScreen() {
                 modifier = Modifier
                     .fillMaxWidth()
                     .clickable {
+                        if (taskName.isBlank() || taskDescription.isBlank() || dateState.isBlank() || timeState.isBlank()) {
+                            Toast.makeText(context, "Please fill all required fields", Toast.LENGTH_SHORT).show()
+                        } else {
+                            val task = TaskEntity(
+                                name = taskName,
+                                description = taskDescription,
+                                date = dateState,
+                                time = timeState,
+                                priority = LevelsSelected.selPriorityLevel, // Store selected priority string
+                                repeat = LevelsSelected.selRepeatLevel,     // Store selected repeat value
+                                notify = isChecked,
+                                status = "Pending"
+                            )
 
+                            CoroutineScope(Dispatchers.IO).launch {
+                                DatabaseProvider.getDb(context).taskDao().insert(task)
+                            }
+
+                            Toast.makeText(context, "Task Saved Successfully", Toast.LENGTH_SHORT).show()
+                            context.finish() // Close activity
+                        }
                     }
                     .background(
                         color = colorResource(id = R.color.soft_peach),
@@ -344,7 +377,10 @@ fun PriorityLevelChips() {
                             selectedLevels.remove(mood)
                         } else {
                             selectedLevels.add(mood)
+                            LevelsSelected.selPriorityLevel=selectedLevels[0]
                         }
+
+
                     },
                     label = { Text(mood) }
                 )
@@ -360,9 +396,9 @@ fun RepeatStatusChips() {
     val levels = listOf("One-Time", "Daily", "Weekly", "Monthly")
     val repeatLevels = remember { mutableStateListOf<String>() }
 
-    Column(modifier = Modifier.padding(16.dp)) {
+    Column(modifier = Modifier.padding(horizontal = 16.dp)) {
         Text(
-            text = "Priority Level",
+            text = "Repeat Status",
             style = MaterialTheme.typography.titleMedium,
             modifier = Modifier.padding(bottom = 8.dp)
         )
@@ -380,10 +416,18 @@ fun RepeatStatusChips() {
                         } else {
                             repeatLevels.add(mood)
                         }
+
+                        LevelsSelected.selRepeatLevel=repeatLevels.toString()
                     },
                     label = { Text(mood) }
                 )
             }
         }
     }
+}
+
+
+object LevelsSelected{
+    var selPriorityLevel = ""
+    var selRepeatLevel = ""
 }

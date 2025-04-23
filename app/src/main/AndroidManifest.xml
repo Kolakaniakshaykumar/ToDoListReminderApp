@@ -13,17 +13,16 @@
         android:theme="@style/Theme.TodoList"
         tools:targetApi="31">
         <activity
+            android:name=".ShowTaksActivity"
+            android:exported="false" />
+        <activity
             android:name=".CreateTaskActivity"
             android:exported="false" />
         <activity
             android:name=".ConatinerActivity"
             android:exported="true"
             android:theme="@style/Base.Theme.TodoList">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity
             android:name=".SignUpActivity"
@@ -37,12 +36,12 @@
             android:label="@string/app_name"
             android:theme="@style/Theme.TodoList">
 
-            <!-- <intent-filter> -->
-            <!-- <action android:name="android.intent.action.MAIN" /> -->
+             <intent-filter>
+             <action android:name="android.intent.action.MAIN" />
 
 
-            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
-            <!-- </intent-filter> -->
+             <category android:name="android.intent.category.LAUNCHER" />
+             </intent-filter>
         </activity>
     </application>
 
