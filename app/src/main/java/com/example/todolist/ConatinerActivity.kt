@@ -27,7 +27,7 @@ class ConatinerActivity : AppCompatActivity() {
         onClickListener()
     }
 
-    fun onClickListener()
+    private fun onClickListener()
     {
         btManageTask.setOnClickListener {
             openFragment(TodoListFragment())
@@ -38,7 +38,7 @@ class ConatinerActivity : AppCompatActivity() {
         }
 
         btMyProfile.setOnClickListener {
-
+            openFragment(ProfileFragment())
         }
     }
 

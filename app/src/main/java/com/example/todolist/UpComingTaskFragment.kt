@@ -1,10 +1,9 @@
 package com.example.todolist
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -24,24 +23,43 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
+import com.example.todolist.taskdata.TaskEntity
+import com.example.todolist.taskdata.TaskViewModel
+import com.example.todolist.taskdata.TaskViewModelFactory
 import com.example.todolist.ui.theme.TodoListTheme
 
 class UpComingTaskFragment : Fragment(R.layout.fragment_up_coming_task) {
 
-    override fun onViewCreated(view: android.view.View, savedInstanceState: Bundle?) {
+    private lateinit var taskViewModel: TaskViewModel
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        val application = requireActivity().application
+
+        taskViewModel = ViewModelProvider(
+            this,
+            TaskViewModelFactory(application)
+        )[TaskViewModel::class.java]
+
         view.findViewById<ComposeView>(R.id.upcomingTasks).setContent {
             TodoListTheme {
-                UpcomingTasksScreen()
+                UpcomingTasksScreen(viewModel = taskViewModel)
             }
         }
     }
-
 }
 
 
@@ -54,52 +72,75 @@ data class Task(
 )
 
 @Composable
-fun UpcomingTasksScreen() {
-    val tasks = listOf(
-        Task("Meeting with Client", "Discuss Q2 deliverables", "2025-04-20", "10:00 AM", "High"),
-        Task("Project Review", "Team progress review", "2025-04-21", "02:00 PM", "Medium"),
-        Task("Design Mockups", "Prepare UI for new module", "2025-04-22", "11:30 AM", "High"),
-        Task("Code Refactoring", "Optimize legacy code", "2025-04-23", "03:00 PM", "Low"),
-        Task("Submit Report", "Submit financial report", "2025-04-24", "09:00 AM", "Medium"),
-        Task("Team Standup", "Daily sync-up", "2025-04-25", "10:00 AM", "Low"),
-        Task("Client Demo", "Demo of new features", "2025-04-26", "01:00 PM", "High"),
-        Task("Update Documentation", "API Docs and Readme", "2025-04-27", "04:00 PM", "Medium"),
-        Task("Backend Testing", "Database + API layer", "2025-04-28", "02:00 PM", "High"),
-        Task("Plan Sprint", "Backlog grooming + sprint plan", "2025-04-29", "11:00 AM", "Medium")
-    )
+fun UpcomingTasksScreen(viewModel: TaskViewModel) {
+
+    val upcomingTasks by viewModel.getUpcomingTasks().collectAsState(initial = emptyList())
 
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp)
     ) {
-        Text(
-            text = "Upcoming Tasks",
-            style = MaterialTheme.typography.headlineSmall,
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier.padding(bottom = 12.dp)
-        )
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(color = colorResource(id = R.color.soft_peach))
+                .padding(horizontal = 12.dp, vertical = 4.dp),
+        ) {
+            Text(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                text = "Upcoming Tasks",
+                textAlign = TextAlign.Center,
+                style = MaterialTheme.typography.headlineSmall.copy(
+                    color = Color.White,
+                    fontWeight = FontWeight.Bold
+                )
+            )
+        }
 
-        LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            items(tasks.size) { task ->
-                TaskCard(tasks[task])
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(12.dp)
+        ) {
+
+            if (upcomingTasks.isNotEmpty()) {
+
+                LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    items(upcomingTasks.size) { task ->
+                        TaskCard(upcomingTasks[task])
+                    }
+                }
+
+            } else {
+                Text(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    text = "No Upcoming Tasks",
+                    textAlign = TextAlign.Center,
+                    style = MaterialTheme.typography.titleMedium.copy(
+                        color = Color.Black,
+                        fontWeight = FontWeight.Bold
+                    )
+                )
             }
         }
     }
 }
 
 @Composable
-fun TaskCard(task: Task) {
+fun TaskCard(task: TaskEntity) {
     Card(
         modifier = Modifier.fillMaxWidth(),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
         Column(modifier = Modifier.padding(12.dp)) {
             Row(
-                horizontalArrangement = Arrangement.SpaceBetween,
                 modifier = Modifier.fillMaxWidth()
             ) {
+                Text("Task Name : ")
                 Text(text = task.name, fontWeight = FontWeight.Bold)
+                Spacer(modifier = Modifier.weight(1f))
                 Text(
                     text = task.priority,
                     color = when (task.priority) {
@@ -114,10 +155,19 @@ fun TaskCard(task: Task) {
             Text(text = task.description, style = MaterialTheme.typography.bodySmall)
             Spacer(modifier = Modifier.height(4.dp))
             Row {
-                Icon(Icons.Default.DateRange, contentDescription = null, modifier = Modifier.size(16.dp))
+                Icon(
+                    Icons.Default.DateRange,
+                    contentDescription = null,
+                    modifier = Modifier.size(16.dp)
+                )
                 Text(text = " ${task.date}", style = MaterialTheme.typography.bodySmall)
                 Spacer(modifier = Modifier.width(12.dp))
-                Icon(Icons.Default.DateRange, contentDescription = null, modifier = Modifier.size(16.dp))
+                Image(
+                    modifier = Modifier
+                        .size(16.dp),
+                    painter = painterResource(id = R.drawable.baseline_access_time_24),
+                    contentDescription = "Time"
+                )
                 Text(text = " ${task.time}", style = MaterialTheme.typography.bodySmall)
             }
         }

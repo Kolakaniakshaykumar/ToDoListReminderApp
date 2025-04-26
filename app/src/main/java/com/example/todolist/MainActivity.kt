@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -51,10 +52,7 @@ fun BrandDisplay() {
         val job = CoroutineScope(Dispatchers.Main).launch {
             delay(3000)
 
-
-            val currentStatus = TodoListData.readLS(context)
-
-            if(currentStatus)
+            if(TaskManagerPrefs.isUserAuthenticated(context))
             {
                 context.startActivity(Intent(context, ConatinerActivity::class.java))
                 context.finish()
@@ -74,7 +72,7 @@ fun BrandDisplayScreen() {
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(color = colorResource(id = R.color.crimson_red)),
+            .background(color = colorResource(id = R.color.shade1)),
         contentAlignment = Alignment.Center
     ) {
         Column(
@@ -108,12 +106,14 @@ fun BrandDisplayScreen() {
             )
 
             Image(
-                painter = painterResource(id = R.drawable.todo_list),
-                contentDescription = "Akshay Kumar Kolakani",
+                modifier = Modifier
+                    .size(200.dp)
+                    .align(Alignment.CenterHorizontally),
+                painter = painterResource(id = R.drawable.todolist_icon),
+                contentDescription = "Back"
             )
 
             Spacer(modifier = Modifier.weight(1f))
-
 
         }
     }

@@ -153,6 +153,9 @@ fun TodoListScreen() {
             Column(
                 modifier = Modifier
                     .weight(1f)
+                    .clickable {
+                        context.startActivity(Intent(context, ShowTaksActivity::class.java))
+                    }
                     .background(
                         color = colorResource(id = R.color.shade1),
                         shape = RoundedCornerShape(6.dp)
@@ -180,7 +183,7 @@ fun TodoListScreen() {
 
                 Text(
                     modifier = Modifier,
-                    text = "Add Participants",
+                    text = "Added Tasks",
                     textAlign = TextAlign.Center,
                     style = MaterialTheme.typography.titleMedium.copy(
                         color = Color.Black,
@@ -193,7 +196,7 @@ fun TodoListScreen() {
 
                 Text(
                     modifier = Modifier,
-                    text = "Include people to collaborate or share",
+                    text = "List of tasks added by you",
                     textAlign = TextAlign.Center,
                     style = MaterialTheme.typography.bodyMedium.copy(
                         color = Color.Black
@@ -215,6 +218,10 @@ fun TodoListScreen() {
             Column(
                 modifier = Modifier
                     .weight(1f)
+                    .clickable {
+                        context.startActivity(Intent(context, UpdateTaskActivity::class.java))
+
+                    }
                     .background(
                         color = colorResource(id = R.color.shade1),
                         shape = RoundedCornerShape(6.dp)
@@ -255,7 +262,7 @@ fun TodoListScreen() {
 
                 Text(
                     modifier = Modifier,
-                    text = "Make changes to your existing tasks.",
+                    text = "Update the status of task once expired.",
                     textAlign = TextAlign.Center,
                     style = MaterialTheme.typography.bodyMedium.copy(
                         color = Color.Black
@@ -272,6 +279,9 @@ fun TodoListScreen() {
             Column(
                 modifier = Modifier
                     .weight(1f)
+                    .clickable {
+                        context.startActivity(Intent(context, DeleteTaskActivity::class.java))
+                    }
                     .background(
                         color = colorResource(id = R.color.shade1),
                         shape = RoundedCornerShape(6.dp)

@@ -7,9 +7,8 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
-import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -17,6 +16,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -39,11 +39,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import com.google.firebase.database.FirebaseDatabase
 
 class SignUpActivity : ComponentActivity() {
@@ -65,9 +64,22 @@ fun SignUpScreen() {
     val context = LocalContext.current as Activity
 
     Column(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier
+            .fillMaxSize()
+            .background(color = colorResource(id = R.color.shade1))
+
     ) {
         Spacer(modifier = Modifier.weight(1f))
+
+        Image(
+            modifier = Modifier
+                .size(200.dp)
+                .align(Alignment.CenterHorizontally),
+            painter = painterResource(id = R.drawable.todolist_icon),
+            contentDescription = "Back"
+        )
+
+        Spacer(modifier = Modifier.height(12.dp))
 
         Button(
             onClick = {
@@ -92,7 +104,6 @@ fun SignUpScreen() {
 
         Spacer(modifier = Modifier.weight(0.5f))
 
-
         // Login title
         Text(
             text = "Register",
@@ -100,8 +111,6 @@ fun SignUpScreen() {
             modifier = Modifier
                 .padding(bottom = 12.dp)
                 .align(Alignment.CenterHorizontally)
-
-
         )
 
         Spacer(modifier = Modifier.weight(0.2f))
@@ -198,13 +207,21 @@ fun SignUpScreen() {
                     .clickable {
                         when {
                             useremail.isEmpty() -> {
-                                Toast.makeText(context, " Please Enter Mail", Toast.LENGTH_SHORT).show()
+                                Toast.makeText(context, "Email missing. Kindly provide it to proceed", Toast.LENGTH_SHORT)
+                                    .show()
                             }
+
                             name.isEmpty() -> {
-                                Toast.makeText(context, " Please Enter Name", Toast.LENGTH_SHORT).show()
+                                Toast.makeText(context, "Name missing. Kindly provide it to proceed", Toast.LENGTH_SHORT)
+                                    .show()
                             }
+
                             userpassword.isEmpty() -> {
-                                Toast.makeText(context, " Please Enter Password", Toast.LENGTH_SHORT).show()
+                                Toast.makeText(
+                                    context,
+                                    "Password missing. Kindly provide it to proceed",
+                                    Toast.LENGTH_SHORT
+                                ).show()
                             }
 
                             else -> {
@@ -214,7 +231,7 @@ fun SignUpScreen() {
                                     "",
                                     userpassword
                                 )
-                                signUpAppUser(appUserDetails,context)
+                                signUpAppUser(appUserDetails, context)
                             }
 
                         }
@@ -243,6 +260,9 @@ fun signUpAppUser(appUserDetails: AppUserDetails, context: Context) {
                 Toast.makeText(context, "You Registered Successfully", Toast.LENGTH_SHORT)
                     .show()
 
+                context.startActivity(Intent(context, SignInActivity::class.java))
+                (context as Activity).finish()
+
             } else {
                 Toast.makeText(
                     context,
@@ -261,8 +281,8 @@ fun signUpAppUser(appUserDetails: AppUserDetails, context: Context) {
 }
 
 data class AppUserDetails(
-    var name : String = "",
-    var emailid : String = "",
-    var area : String = "",
+    var name: String = "",
+    var emailid: String = "",
+    var area: String = "",
     var password: String = ""
 )
