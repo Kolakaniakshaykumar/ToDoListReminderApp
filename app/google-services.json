@@ -1,15 +1,16 @@
 {
   "project_info": {
     "project_number": "998324632311",
+    "firebase_url": "https://todolistreminder-218ae-default-rtdb.firebaseio.com",
     "project_id": "todolistreminder-218ae",
     "storage_bucket": "todolistreminder-218ae.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:998324632311:android:4b4886aede384007d0f1f2",
+        "mobilesdk_app_id": "1:998324632311:android:b161210476f51df4d0f1f2",
         "android_client_info": {
-          "package_name": "com.example.todolist"
+          "package_name": "tessides3399241.todolistapp.Kolakaniakshaykumar"
         }
       },
       "oauth_client": [],

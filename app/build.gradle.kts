@@ -7,11 +7,11 @@ plugins {
 }
 
 android {
-    namespace = "com.example.todolist"
+    namespace = "tessides3399241.todolistapp.Kolakaniakshaykumar"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.example.todolist"
+        applicationId = "tessides3399241.todolistapp.Kolakaniakshaykumar"
         minSdk = 24
         targetSdk = 35
         versionCode = 1
@@ -78,5 +78,8 @@ dependencies {
     implementation("androidx.room:room-runtime:2.6.1")
     kapt("androidx.room:room-compiler:2.6.1")
     implementation("androidx.room:room-ktx:2.6.1")
+
+    implementation("androidx.biometric:biometric:1.4.0-alpha02")
+
 
 }
