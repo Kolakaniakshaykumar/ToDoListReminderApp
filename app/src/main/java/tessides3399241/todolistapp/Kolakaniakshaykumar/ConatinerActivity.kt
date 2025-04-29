@@ -19,7 +19,7 @@ class ConatinerActivity : AppCompatActivity() {
         btUpComingTask=findViewById(R.id.btUpcomingTasks)
         btMyProfile=findViewById(R.id.btMyProfile)
 
-        openFragment(tessides3399241.todolistapp.Kolakaniakshaykumar.TodoListFragment())
+        openFragment(TodoListFragment())
 
         onClickListener()
     }
